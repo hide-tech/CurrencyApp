@@ -17,6 +17,7 @@ public class Currency {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime checkedAt;
     private Double usdValue;
     private Double eurValue;
