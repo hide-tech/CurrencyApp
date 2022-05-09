@@ -4,3 +4,19 @@ server:
 spring:
   application:
     name: currency-service
+  datasource:
+    username: 'admin'
+    url: jdbc:postgresql://localhost:5432/currency
+    password: 'admin1234'
+    jpa:
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate:
+        ddl-auto: update
+      show-sql: 'true'
+
+bank:
+  api:
+    uri: https://api.apilayer.com/exchangerates_data/latest?symbols=GBP%2CJPY%2CEUR&base=USD
+    header: F0YRESJ79JqseDlRxEE5FmZenymE0NFZ

@@ -13,6 +13,8 @@ services:
     restart: always
     volumes:
       - database-data:/var/lib/postgresql/data/
+    networks:
+      - postgresql-database
 
   pgadmin:
     image: dpage/pgadmin4
@@ -24,6 +26,12 @@ services:
     restart: always
     volumes:
       - pgadmin:/var/lib/postgresql/pgadmin/
+    networks:
+      - postgresql-database
+
+networks:
+  postgresql-database:
+    driver: bridge
 
 volumes:
   database-data:
