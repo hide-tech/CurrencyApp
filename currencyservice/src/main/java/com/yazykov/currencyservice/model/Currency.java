@@ -1,15 +1,13 @@
 package com.yazykov.currencyservice.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
 @Builder
 @Entity
@@ -19,8 +17,8 @@ public class Currency {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime checkedAt;
-    private Double usdValue;
-    private Double eurValue;
-    private Double gbpValue;
-    private Double jpyValue;
+    private BigDecimal usdValue;
+    private BigDecimal eurValue;
+    private BigDecimal gbpValue;
+    private BigDecimal jpyValue;
 }

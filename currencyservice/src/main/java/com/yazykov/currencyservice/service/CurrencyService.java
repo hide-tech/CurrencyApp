@@ -1,37 +1,38 @@
 package com.yazykov.currencyservice.service;
 
 import com.yazykov.currencyservice.dto.BankCurrencyResponse;
-import com.yazykov.currencyservice.dto.CurrencyRequest;
+import com.yazykov.currencyservice.dto.CurrencyResponse;
+import com.yazykov.currencyservice.dto.CurrencyUnitDto;
 import com.yazykov.currencyservice.model.Currency;
 import com.yazykov.currencyservice.repository.CurrencyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CurrencyService {
 
-    @Autowired
-    private BankExchangeClient client;
-    @Autowired
-    private CurrencyRepository repository;
+    private final BankExchangeClient client;
+
+    private final CurrencyRepository repository;
 
     private LocalDateTime checkTime;
 
-    public CurrencyRequest getLatestCurrency(){
+    public CurrencyResponse getLatestCurrency(){
         checkAndSetCurrency();
-        Currency latestCurrency = repository.findFirstByOrderByCheckedAtDesc();
+        Currency latestCurrency = repository.findFirst();
         return mapToDto(latestCurrency);
     }
 
-    private CurrencyRequest mapToDto(Currency currency) {
-        return CurrencyRequest.builder()
+    private CurrencyResponse mapToDto(Currency currency) {
+        return CurrencyResponse.builder()
                 .checkingTime(currency.getCheckedAt())
                 .usd(currency.getUsdValue())
                 .eur(currency.getEurValue())
@@ -70,10 +71,9 @@ public class CurrencyService {
         Currency currency = new Currency();
         LocalDateTime currencyTimestamp = response.getDate().atTime(LocalTime.now());
         currency.setCheckedAt(currencyTimestamp);
-        currency.setUsdValue(1.0);
-        currency.setJpyValue(response.getRates().get("JPY"));
-        currency.setEurValue(response.getRates().get("EUR"));
-        currency.setGbpValue(response.getRates().get("GBP"));
+        currency.setUsdValue(new BigDecimal("1.0"));
+//        List<CurrencyUnitDto> rates = response.getRates();
+//        rates.stream().
         return currency;
     }
 }

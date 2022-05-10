@@ -1,9 +1,8 @@
 package com.yazykov.currencyservice.controller;
 
-import com.yazykov.currencyservice.dto.CurrencyRequest;
+import com.yazykov.currencyservice.dto.CurrencyResponse;
 import com.yazykov.currencyservice.service.CurrencyService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,11 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CurrencyController {
 
-    @Autowired
-    private CurrencyService currencyService;
+    private final CurrencyService currencyService;
 
     @GetMapping
-    public CurrencyRequest getCurrency(){
+    public CurrencyResponse getCurrency(){
         return currencyService.getLatestCurrency();
     }
 

@@ -19,3 +19,5 @@ spring:
 bank:
   api:
     uri: https://api.apilayer.com/exchangerates_data/latest?symbols=GBP%2CJPY%2CEUR&base=USD
+    header: 'apikey'
+    value: 'nA1gAcB38WdIUNMKYYG8UfBmR9RIErVp'
