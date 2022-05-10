@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class CurrencyResponse {
-    private LocalDateTime checkingTime;
-    private BigDecimal usd;
-    private BigDecimal eur;
-    private BigDecimal gbp;
-    private BigDecimal jpy;
+    private LocalDateTime checkedAt;
+    private BigDecimal usdValue;
+    private BigDecimal eurValue;
+    private BigDecimal gbpValue;
+    private BigDecimal jpyValue;
 }
