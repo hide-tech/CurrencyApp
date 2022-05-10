@@ -12,5 +12,5 @@ public class BankCurrencyResponse {
     private LocalDate date;
     private Map<String, Double> rates;
     private Boolean success;
-    private LocalTime timestamp;
+    private Long timestamp;
 }

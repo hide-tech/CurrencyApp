@@ -6,23 +6,26 @@ import com.yazykov.currencyservice.model.Currency;
 import com.yazykov.currencyservice.repository.CurrencyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CurrencyService {
 
+    @Autowired
     private BankExchangeClient client;
-
+    @Autowired
     private CurrencyRepository repository;
 
     private LocalDateTime checkTime;
 
     public CurrencyRequest getLatestCurrency(){
+        checkAndSetCurrency();
         Currency latestCurrency = repository.findFirstByOrderByCheckedAtDesc();
         return mapToDto(latestCurrency);
     }
@@ -37,16 +40,19 @@ public class CurrencyService {
 
     }
 
-    @PostConstruct
     public void checkAndSetCurrency(){
         LocalDateTime nowTime = LocalDateTime.now();
         setCheckTimeAndSaveData();
 
-        while (true){
-            if (nowTime.isAfter(checkTime)){
-                setCheckTimeAndSaveData();
-            }
-        }
+//        Runnable dailyCheck = () -> {
+//            while (true){
+//                if (nowTime.isAfter(checkTime)){
+//                    setCheckTimeAndSaveData();
+//                }
+//            }
+//        };
+//        Thread runDailyCheck = new Thread(dailyCheck);
+//        runDailyCheck.start();
     }
 
     private void setCheckTimeAndSaveData(){
@@ -62,7 +68,7 @@ public class CurrencyService {
 
     private Currency mapToCurrency(BankCurrencyResponse response){
         Currency currency = new Currency();
-        LocalDateTime currencyTimestamp = response.getDate().atTime(response.getTimestamp());
+        LocalDateTime currencyTimestamp = response.getDate().atTime(LocalTime.now());
         currency.setCheckedAt(currencyTimestamp);
         currency.setUsdValue(1.0);
         currency.setJpyValue(response.getRates().get("JPY"));
