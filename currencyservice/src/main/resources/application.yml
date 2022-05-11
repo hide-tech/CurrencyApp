@@ -5,9 +5,9 @@ spring:
   application:
     name: currency-service
   datasource:
-    username: 'admin'
-    url: jdbc:postgresql://localhost:5432/currency
-    password: 'admin1234'
+    username: 'postgres'
+    url: jdbc:postgresql://localhost:5433/currency
+    password: 'postgres2'
     jpa:
       properties:
         hibernate:

@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Builder
 public class CurrencyResponse {
     private LocalDateTime checkedAt;
     private BigDecimal usdValue;

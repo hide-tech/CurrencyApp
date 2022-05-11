@@ -1,15 +1,18 @@
 package com.yazykov.currencyservice.dto;
 
-import lombok.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.yazykov.currencyservice.json.BankCurrencyResponseDeserializer;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonDeserialize(using = BankCurrencyResponseDeserializer.class)
 public class BankCurrencyResponse {
     private String base;
     private LocalDate date;

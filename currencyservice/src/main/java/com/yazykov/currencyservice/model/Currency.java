@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Builder
 @Entity
 @Table(name = "currency_tab")
 public class Currency {

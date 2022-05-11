@@ -15,11 +15,15 @@ public class BankExchangeClient {
     private final RestTemplate restTemplate;
 
     @Value("${bank.api.uri}")
-    private final String bankUri;
+    private String bankUri;
     @Value("${bank.api.value}")
-    private final String headerValue;
+    private String headerValue;
     @Value("${bank.api.header}")
-    private final String header;
+    private String header;
+
+//    public BankExchangeClient(RestTemplate restTemplate){
+//        this.restTemplate = restTemplate;
+//    }
 
     public BankCurrencyResponse getCurrencyFromBank(){
         RequestEntity<Void> request = RequestEntity.get(bankUri)
