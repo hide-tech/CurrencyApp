@@ -34,11 +34,34 @@ public class BankCurrencyResponseDeserializer extends JsonDeserializer<BankCurre
         Long timestamp = ((IntNode) treeNode.get("timestamp")).asLong();
         response.setTimestamp(timestamp);
 
-        BigDecimal eur = BigDecimal.valueOf(((DoubleNode) treeNode.get("rates").get("EUR")).asDouble());
-        BigDecimal gbp = BigDecimal.valueOf(((DoubleNode) treeNode.get("rates").get("GBP")).asDouble());
-        BigDecimal jpy = BigDecimal.valueOf(((DoubleNode) treeNode.get("rates").get("JPY")).asDouble());
+        BigDecimal eur, usd, gbp, jpy;
+        TreeNode usdNode = treeNode.get("rates").get("USD");
+        if (usdNode == null){
+            usd = BigDecimal.ZERO;
+        } else {
+            usd = BigDecimal.valueOf(((DoubleNode) usdNode).asDouble());
+        }
+        TreeNode eurNode = treeNode.get("rates").get("EUR");
+        if (eurNode == null){
+            eur = BigDecimal.ZERO;
+        } else {
+            eur = BigDecimal.valueOf(((DoubleNode) eurNode).asDouble());
+        }
+        TreeNode gbpNode = treeNode.get("rates").get("GBP");
+        if (gbpNode == null){
+            gbp = BigDecimal.ZERO;
+        } else {
+            gbp = BigDecimal.valueOf(((DoubleNode) gbpNode).asDouble());
+        }
+        TreeNode jpyNode = treeNode.get("rates").get("JPY");
+        if (jpyNode == null){
+            jpy = BigDecimal.ZERO;
+        } else {
+            jpy = BigDecimal.valueOf(((DoubleNode) jpyNode).asDouble());
+        }
         List<CurrencyUnitDto> rates = List.of(new CurrencyUnitDto("EUR",eur),
-                new CurrencyUnitDto("GBP",gbp), new CurrencyUnitDto("JPY", jpy));
+                new CurrencyUnitDto("GBP",gbp), new CurrencyUnitDto("JPY", jpy),
+                new CurrencyUnitDto("USD",usd));
         response.setRates(rates);
 
         return response;

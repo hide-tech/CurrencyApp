@@ -62,4 +62,45 @@ class BankCurrencyResponseDeserializerTest {
         assert jpy != null;
         assertEquals(jpy.getValue(), new BigDecimal("107.346001"));
     }
+
+    @Test
+    @SneakyThrows
+    void deserializeCorrectWithNullFields(){
+        String json = "{\"base\": \"USD\",\n" +
+                "  \"date\": \"2021-03-17\",\n" +
+                "  \"rates\": {\n" +
+                "    \"EUR\": 0.813399,\n" +
+                "    \"JPY\": 107.346001\n" +
+                "  },\n" +
+                "  \"success\": true,\n" +
+                "  \"timestamp\": 1519296206}";
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(BankCurrencyResponse.class, deserializer);
+        objectMapper.registerModule(module);
+
+        BankCurrencyResponse response = objectMapper.readValue(json,BankCurrencyResponse.class);
+
+        assertEquals(response.getBase(),"USD");
+        assertEquals(response.getDate(), LocalDate.of(2021,3,17));
+        assertEquals(response.getSuccess(), true);
+        assertEquals(response.getTimestamp(), 1519296206L);
+
+        List<CurrencyUnitDto> units = response.getRates();
+
+        CurrencyUnitDto eur = units.stream().filter(unit -> unit.getName().equals("EUR"))
+                .findAny().orElse(null);
+        CurrencyUnitDto gbp = units.stream().filter(unit -> unit.getName().equals("GBP"))
+                .findAny().orElse(null);
+        CurrencyUnitDto jpy = units.stream().filter(unit -> unit.getName().equals("JPY"))
+                .findAny().orElse(null);
+
+        assert eur != null;
+        assertEquals(eur.getValue(), new BigDecimal("0.813399"));
+        assert gbp != null;
+        assertEquals(gbp.getValue(), BigDecimal.ZERO);
+        assert jpy != null;
+        assertEquals(jpy.getValue(), new BigDecimal("107.346001"));
+    }
 }

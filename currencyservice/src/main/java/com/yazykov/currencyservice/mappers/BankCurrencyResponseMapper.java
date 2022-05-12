@@ -12,32 +12,45 @@ import java.time.LocalTime;
 public abstract class BankCurrencyResponseMapper {
 
     public Currency bankCurrencyResponseToCurrency(BankCurrencyResponse response){
-        if (response==null)
+        if (response == null)
             return null;
 
         Currency currency = new Currency();
         currency.setCheckedAt(response.getDate().atTime(LocalTime.now()));
-        currency.setUsdValue(new BigDecimal("1.0"));
         CurrencyUnitDto eur = response.getRates().stream().filter(unit -> unit.getName().equals("EUR"))
                 .findAny().orElse(null);
-        if (eur!=null) {
+        if (eur != null) {
             currency.setEurValue(eur.getValue());
         } else {
             currency.setEurValue(BigDecimal.ZERO);
         }
         CurrencyUnitDto gbp = response.getRates().stream().filter(unit -> unit.getName().equals("GBP"))
                 .findAny().orElse(null);
-        if (gbp!=null) {
+        if (gbp != null) {
             currency.setGbpValue(gbp.getValue());
         } else {
             currency.setGbpValue(BigDecimal.ZERO);
         }
         CurrencyUnitDto jpy = response.getRates().stream().filter(unit -> unit.getName().equals("JPY"))
                 .findAny().orElse(null);
-        if (jpy!=null) {
+        if (jpy != null) {
             currency.setJpyValue(jpy.getValue());
         } else {
             currency.setJpyValue(BigDecimal.ZERO);
+        }
+        CurrencyUnitDto usd = response.getRates().stream().filter(unit -> unit.getName().equals("USD"))
+                .findAny().orElse(null);
+        if (usd != null) {
+            currency.setUsdValue(usd.getValue());
+        } else {
+            currency.setUsdValue(BigDecimal.ZERO);
+        }
+        String base = response.getBase();
+        switch (base){
+            case "USD" -> currency.setUsdValue(new BigDecimal("1.0"));
+            case "EUR" -> currency.setEurValue(new BigDecimal("1.0"));
+            case "GBP" -> currency.setGbpValue(new BigDecimal("1.0"));
+            case "JPY" -> currency.setJpyValue(new BigDecimal("1.0"));
         }
 
         return currency;
