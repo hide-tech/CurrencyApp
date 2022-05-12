@@ -24,6 +24,7 @@ class BankCurrencyResponseDeserializerTest {
     @Test
     @SneakyThrows
     void deserializeCorrect() {
+        // given
         String json = "{\"base\": \"USD\",\n" +
                 "  \"date\": \"2021-03-17\",\n" +
                 "  \"rates\": {\n" +
@@ -33,28 +34,25 @@ class BankCurrencyResponseDeserializerTest {
                 "  },\n" +
                 "  \"success\": true,\n" +
                 "  \"timestamp\": 1519296206}";
-
+        //init
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleModule module = new SimpleModule();
         module.addDeserializer(BankCurrencyResponse.class, deserializer);
         objectMapper.registerModule(module);
-
+        //when
         BankCurrencyResponse response = objectMapper.readValue(json,BankCurrencyResponse.class);
-
-        assertEquals(response.getBase(),"USD");
-        assertEquals(response.getDate(), LocalDate.of(2021,3,17));
-        assertEquals(response.getSuccess(), true);
-        assertEquals(response.getTimestamp(), 1519296206L);
-
         List<CurrencyUnitDto> units = response.getRates();
-
         CurrencyUnitDto eur = units.stream().filter(unit -> unit.getName().equals("EUR"))
                 .findAny().orElse(null);
         CurrencyUnitDto gbp = units.stream().filter(unit -> unit.getName().equals("GBP"))
                 .findAny().orElse(null);
         CurrencyUnitDto jpy = units.stream().filter(unit -> unit.getName().equals("JPY"))
                 .findAny().orElse(null);
-
+        //then
+        assertEquals(response.getBase(),"USD");
+        assertEquals(response.getDate(), LocalDate.of(2021,3,17));
+        assertEquals(response.getSuccess(), true);
+        assertEquals(response.getTimestamp(), 1519296206L);
         assert eur != null;
         assertEquals(eur.getValue(), new BigDecimal("0.813399"));
         assert gbp != null;
@@ -66,6 +64,7 @@ class BankCurrencyResponseDeserializerTest {
     @Test
     @SneakyThrows
     void deserializeCorrectWithNullFields(){
+        //given
         String json = "{\"base\": \"USD\",\n" +
                 "  \"date\": \"2021-03-17\",\n" +
                 "  \"rates\": {\n" +
@@ -74,28 +73,25 @@ class BankCurrencyResponseDeserializerTest {
                 "  },\n" +
                 "  \"success\": true,\n" +
                 "  \"timestamp\": 1519296206}";
-
+        //init
         ObjectMapper objectMapper = new ObjectMapper();
         SimpleModule module = new SimpleModule();
         module.addDeserializer(BankCurrencyResponse.class, deserializer);
         objectMapper.registerModule(module);
-
+        //when
         BankCurrencyResponse response = objectMapper.readValue(json,BankCurrencyResponse.class);
-
-        assertEquals(response.getBase(),"USD");
-        assertEquals(response.getDate(), LocalDate.of(2021,3,17));
-        assertEquals(response.getSuccess(), true);
-        assertEquals(response.getTimestamp(), 1519296206L);
-
         List<CurrencyUnitDto> units = response.getRates();
-
         CurrencyUnitDto eur = units.stream().filter(unit -> unit.getName().equals("EUR"))
                 .findAny().orElse(null);
         CurrencyUnitDto gbp = units.stream().filter(unit -> unit.getName().equals("GBP"))
                 .findAny().orElse(null);
         CurrencyUnitDto jpy = units.stream().filter(unit -> unit.getName().equals("JPY"))
                 .findAny().orElse(null);
-
+        //then
+        assertEquals(response.getBase(),"USD");
+        assertEquals(response.getDate(), LocalDate.of(2021,3,17));
+        assertEquals(response.getSuccess(), true);
+        assertEquals(response.getTimestamp(), 1519296206L);
         assert eur != null;
         assertEquals(eur.getValue(), new BigDecimal("0.813399"));
         assert gbp != null;

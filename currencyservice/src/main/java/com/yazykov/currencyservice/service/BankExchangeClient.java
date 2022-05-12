@@ -21,13 +21,8 @@ public class BankExchangeClient {
     @Value("${bank.api.header}")
     private String header;
 
-//    public BankExchangeClient(RestTemplate restTemplate){
-//        this.restTemplate = restTemplate;
-//    }
-
     public BankCurrencyResponse getCurrencyFromBank(){
         RequestEntity<Void> request = RequestEntity.get(bankUri)
-//                .accept(MediaType.APPLICATION_JSON)
                 .header(header, headerValue)
                 .build();
         ResponseEntity<BankCurrencyResponse> response = restTemplate.exchange(request, BankCurrencyResponse.class);

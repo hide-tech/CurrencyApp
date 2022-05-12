@@ -16,21 +16,23 @@ class CurrencyResponseMapperTest {
 
     @Test
     void currencyToCurrencyResponse() {
+        //given
         Currency currency = new Currency(15L, LocalDateTime.now(), new BigDecimal("1.0"),
                 new BigDecimal("1.1"), new BigDecimal("1.2"), new BigDecimal("1.3"));
-
+        //when
         CurrencyResponse response = mapper.currencyToCurrencyResponse(currency);
-
+        //then
         checkResponses(currency, response);
     }
 
     @Test
     void currencyResponseToCurrency() {
+        //given
         CurrencyResponse response = new CurrencyResponse(LocalDateTime.now(), new BigDecimal("1.0"),
                 new BigDecimal("1.1"), new BigDecimal("1.2"), new BigDecimal("1.3"));
-
+        //when
         Currency currency = mapper.currencyResponseToCurrency(response);
-
+        //then
         checkResponses(currency, response);
     }
 

@@ -19,13 +19,15 @@ class BankCurrencyResponseMapperTest {
 
     @Test
     void bankCurrencyResponseToCurrencyCorrect() {
+        //given
         BankCurrencyResponse response = new BankCurrencyResponse("USD", LocalDate.now(),
                 List.of(new CurrencyUnitDto("EUR",new BigDecimal("1.1")),
                         new CurrencyUnitDto("GBP",new BigDecimal("1.2")),
                         new CurrencyUnitDto("JPY",new BigDecimal("1.3")))
                 , true,12345L);
+        //when
         Currency currency = mapper.bankCurrencyResponseToCurrency(response);
-
+        //then
         assertEquals(currency.getEurValue(),new BigDecimal("1.1"));
         assertEquals(currency.getUsdValue(),new BigDecimal("1.0"));
         assertEquals(currency.getGbpValue(),new BigDecimal("1.2"));
@@ -34,10 +36,12 @@ class BankCurrencyResponseMapperTest {
 
     @Test
     void bankCurrencyResponseToCurrencyCorrectWithNullFields() {
+        //given
         BankCurrencyResponse response = new BankCurrencyResponse("USD", LocalDate.now(),
                 new ArrayList<CurrencyUnitDto>(), true,12345L);
+        //when
         Currency currency = mapper.bankCurrencyResponseToCurrency(response);
-
+        //then
         assertEquals(currency.getUsdValue(),new BigDecimal("1.0"));
         assertEquals(currency.getEurValue(),BigDecimal.ZERO);
         assertEquals(currency.getGbpValue(),BigDecimal.ZERO);
