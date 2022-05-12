@@ -1,6 +1,7 @@
 package com.yazykov.currencyservice.service;
 
 import com.yazykov.currencyservice.mappers.BankCurrencyResponseMapper;
+import com.yazykov.currencyservice.mappers.BankCurrencyResponseMapperImpl;
 import com.yazykov.currencyservice.mappers.CurrencyResponseMapper;
 import com.yazykov.currencyservice.mappers.CurrencyResponseMapperImpl;
 import com.yazykov.currencyservice.repository.CurrencyRepository;
@@ -18,7 +19,7 @@ class CurrencyServiceTest {
     @Mock
     private CurrencyRepository repository;
     private BankExchangeClient client;
-    private BankCurrencyResponseMapper bankMapper;
+    private BankCurrencyResponseMapper bankMapper = new BankCurrencyResponseMapperImpl();
     private CurrencyResponseMapper mapper = new CurrencyResponseMapperImpl();
 
     private CurrencyService service;
