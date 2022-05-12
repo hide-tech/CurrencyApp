@@ -28,7 +28,7 @@ public class CurrencyService {
         return currencyResponseMapper.currencyToCurrencyResponse(latestCurrency);
     }
 
-    @Scheduled(fixedRate = 300000)
+    @Scheduled(fixedRate = 3000000)
     private void setCheckTimeAndSaveData(){
         BankCurrencyResponse response = client.getCurrencyFromBank();
 
