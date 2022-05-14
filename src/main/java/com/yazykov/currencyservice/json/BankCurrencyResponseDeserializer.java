@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.node.*;
 import com.yazykov.currencyservice.dto.BankCurrencyResponse;
 import com.yazykov.currencyservice.dto.CurrencyUnitDto;
 import org.springframework.boot.jackson.JsonComponent;
-import org.springframework.boot.json.JsonParser;
 
 import java.io.IOException;
 import java.math.BigDecimal;
