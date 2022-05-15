@@ -8,6 +8,7 @@ import com.yazykov.currencyservice.repository.CurrencyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -19,14 +20,14 @@ class CurrencyServiceTest {
     @Mock
     private CurrencyRepository repository;
     private BankExchangeClient client;
-    private BankCurrencyResponseMapper bankMapper = new BankCurrencyResponseMapperImpl();
-    private CurrencyResponseMapper mapper = new CurrencyResponseMapperImpl();
+    private CurrencyResponseMapper mapper = Mappers.getMapper(CurrencyResponseMapperImpl.class);
+    private BankCurrencyResponseMapper bankMapper = Mappers.getMapper(BankCurrencyResponseMapperImpl.class);
 
     private CurrencyService service;
 
     @BeforeEach
     void setUp() {
-        service = new CurrencyService(client, repository, bankMapper, mapper);
+        service = new CurrencyService(client, repository, mapper, bankMapper);
     }
 
     @Test

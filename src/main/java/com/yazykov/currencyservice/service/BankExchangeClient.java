@@ -25,7 +25,8 @@ public class BankExchangeClient {
         RequestEntity<Void> request = RequestEntity.get(bankUri)
                 .header(header, headerValue)
                 .build();
-        ResponseEntity<BankCurrencyResponse> response = restTemplate.exchange(request, BankCurrencyResponse.class);
+        ResponseEntity<BankCurrencyResponse> response = restTemplate
+                .exchange(request, BankCurrencyResponse.class);
         return response.getBody();
     }
 

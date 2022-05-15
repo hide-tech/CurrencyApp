@@ -1,13 +1,16 @@
 package com.yazykov.currencyservice.mappers;
 
 import com.yazykov.currencyservice.dto.CurrencyResponse;
+import com.yazykov.currencyservice.dto.CurrencyUnit;
 import com.yazykov.currencyservice.model.Currency;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-05-14T20:41:31+0300",
+    date = "2022-05-15T21:27:48+0300",
     comments = "version: 1.5.0.RC1, compiler: javac, environment: Java 18.0.1.1 (Oracle Corporation)"
 )
 @Component
@@ -22,10 +25,10 @@ public class CurrencyResponseMapperImpl implements CurrencyResponseMapper {
         CurrencyResponse currencyResponse = new CurrencyResponse();
 
         currencyResponse.setCheckedAt( currency.getCheckedAt() );
-        currencyResponse.setUsdValue( currency.getUsdValue() );
-        currencyResponse.setEurValue( currency.getEurValue() );
-        currencyResponse.setGbpValue( currency.getGbpValue() );
-        currencyResponse.setJpyValue( currency.getJpyValue() );
+        List<CurrencyUnit> list = currency.getRates();
+        if ( list != null ) {
+            currencyResponse.setRates( new ArrayList<CurrencyUnit>( list ) );
+        }
 
         return currencyResponse;
     }
@@ -39,10 +42,10 @@ public class CurrencyResponseMapperImpl implements CurrencyResponseMapper {
         Currency currency = new Currency();
 
         currency.setCheckedAt( currencyResponse.getCheckedAt() );
-        currency.setUsdValue( currencyResponse.getUsdValue() );
-        currency.setEurValue( currencyResponse.getEurValue() );
-        currency.setGbpValue( currencyResponse.getGbpValue() );
-        currency.setJpyValue( currencyResponse.getJpyValue() );
+        List<CurrencyUnit> list = currencyResponse.getRates();
+        if ( list != null ) {
+            currency.setRates( new ArrayList<CurrencyUnit>( list ) );
+        }
 
         return currency;
     }

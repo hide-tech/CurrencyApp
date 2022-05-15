@@ -18,7 +18,7 @@ import java.util.List;
 public class BankCurrencyResponse {
     private String base;
     private LocalDate date;
-    private List<CurrencyUnitDto> rates;
+    private List<CurrencyUnit> rates;
     private Boolean success;
     private Long timestamp;
 }

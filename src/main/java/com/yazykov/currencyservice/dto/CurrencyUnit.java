@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CurrencyUnitDto {
+public class CurrencyUnit {
 
     private String name;
     private BigDecimal value;

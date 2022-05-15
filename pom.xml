@@ -25,6 +25,7 @@
     <mapstruct.version>1.5.0.RC1</mapstruct.version>
     <lombok.mapstruct.binding.version>0.2.0</lombok.mapstruct.binding.version>
     <lombok.version>1.18.24</lombok.version>
+    <hibernate.types52.vresion>2.16.2</hibernate.types52.vresion>
   </properties>
 
   <dependencies>
@@ -48,6 +49,13 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>com.vladmihalcea</groupId>
+      <artifactId>hibernate-types-52</artifactId>
+      <version>${hibernate.types52.vresion}</version>
+    </dependency>
+
 
     <dependency>
       <groupId>com.h2database</groupId>

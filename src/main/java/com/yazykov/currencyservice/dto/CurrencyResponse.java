@@ -1,9 +1,12 @@
 package com.yazykov.currencyservice.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -11,8 +14,5 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CurrencyResponse {
     private LocalDateTime checkedAt;
-    private BigDecimal usdValue;
-    private BigDecimal eurValue;
-    private BigDecimal gbpValue;
-    private BigDecimal jpyValue;
+    private List<CurrencyUnit> rates;
 }
