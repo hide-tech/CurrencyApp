@@ -5,8 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -14,5 +15,5 @@ import java.util.List;
 @AllArgsConstructor
 public class CurrencyResponse {
     private LocalDateTime checkedAt;
-    private List<CurrencyUnit> rates;
+    private Map<String, BigDecimal> rates;
 }

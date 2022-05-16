@@ -6,6 +6,7 @@ import com.yazykov.currencyservice.mappers.BankCurrencyResponseMapper;
 import com.yazykov.currencyservice.mappers.CurrencyResponseMapper;
 import com.yazykov.currencyservice.model.Currency;
 import com.yazykov.currencyservice.repository.CurrencyRepository;
+import com.yazykov.currencyservice.throwable.ConnectionToBankException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,6 +23,8 @@ public class CurrencyService {
     private final BankCurrencyResponseMapper bankCurrencyResponseMapper;
 
     public CurrencyResponse getLatestCurrency(){
+        log.info("into currencyService method getLatestCurrency");
+
         Currency latestCurrency = repository.findFirstByOrderByCheckedAtDesc();
         return currencyResponseMapper.currencyToCurrencyResponse(latestCurrency);
     }
@@ -29,16 +32,18 @@ public class CurrencyService {
     @Scheduled(fixedRate = 30000000)
     private void setCheckTimeAndSaveData(){
 
-        BankCurrencyResponse response = client.getCurrencyFromBank();
+        log.info("into scheduled method setCheckTimeAndSaveData");
+        BankCurrencyResponse response = null;
 
-        if (response==null){
-            log.error("Something wrong with connection to bank");
-        } else {
-
-            Currency currency = bankCurrencyResponseMapper.bankCurrencyResponseToCurrency(response);
-            currency = repository.save(currency);
-
-            log.info("Currency with id: {} has been saved successfully",currency.getId());
+        try {
+            response = client.getCurrencyFromBank();
+        } catch (ConnectionToBankException e) {
+            log.error(e.getMessage());
         }
+
+        Currency currency = bankCurrencyResponseMapper.bankCurrencyResponseToCurrency(response);
+        currency = repository.save(currency);
+
+        log.info("Currency with id: {} has been saved successfully",currency.getId());
     }
 }

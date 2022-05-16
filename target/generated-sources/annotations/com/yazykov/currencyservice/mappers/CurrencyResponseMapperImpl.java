@@ -1,16 +1,16 @@
 package com.yazykov.currencyservice.mappers;
 
 import com.yazykov.currencyservice.dto.CurrencyResponse;
-import com.yazykov.currencyservice.dto.CurrencyUnit;
 import com.yazykov.currencyservice.model.Currency;
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-05-15T21:27:48+0300",
+    date = "2022-05-16T09:42:58+0300",
     comments = "version: 1.5.0.RC1, compiler: javac, environment: Java 18.0.1.1 (Oracle Corporation)"
 )
 @Component
@@ -25,9 +25,9 @@ public class CurrencyResponseMapperImpl implements CurrencyResponseMapper {
         CurrencyResponse currencyResponse = new CurrencyResponse();
 
         currencyResponse.setCheckedAt( currency.getCheckedAt() );
-        List<CurrencyUnit> list = currency.getRates();
-        if ( list != null ) {
-            currencyResponse.setRates( new ArrayList<CurrencyUnit>( list ) );
+        Map<String, BigDecimal> map = currency.getRates();
+        if ( map != null ) {
+            currencyResponse.setRates( new LinkedHashMap<String, BigDecimal>( map ) );
         }
 
         return currencyResponse;
@@ -42,9 +42,9 @@ public class CurrencyResponseMapperImpl implements CurrencyResponseMapper {
         Currency currency = new Currency();
 
         currency.setCheckedAt( currencyResponse.getCheckedAt() );
-        List<CurrencyUnit> list = currencyResponse.getRates();
-        if ( list != null ) {
-            currency.setRates( new ArrayList<CurrencyUnit>( list ) );
+        Map<String, BigDecimal> map = currencyResponse.getRates();
+        if ( map != null ) {
+            currency.setRates( new LinkedHashMap<String, BigDecimal>( map ) );
         }
 
         return currency;
