@@ -9,6 +9,7 @@ import com.yazykov.currencyservice.security.mappers.AppUserAdminResponseMapper;
 import com.yazykov.currencyservice.security.mappers.AppUserResponseMapper;
 import com.yazykov.currencyservice.security.repository.AppUserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AppUserService implements UserDetailsService {
 
     private final AppUserRepository repository;
@@ -37,17 +39,20 @@ public class AppUserService implements UserDetailsService {
     }
 
     public List<AppUserAdminResponse> loadAllUsers() {
+        log.info("Into appUserService method loadAllUsers");
         List<AppUser> users = repository.findAll();
         return users.stream().map(adminMapper::AppUserToAppUserAdminResponse).collect(Collectors.toList());
     }
 
     public AppUserResponse loadUserById(Long id) {
+        log.info("Into appUserService method loadUserById");
         AppUser user = repository.getById(id);
         return mapper.appUserToAppUserResponse(user);
     }
 
     @Transactional
     public String banUser(Long id) {
+        log.info("Into appUserService method banUser");
         AppUser user = repository.getById(id);
         user.setBanned(true);
         repository.save(user);
@@ -56,6 +61,7 @@ public class AppUserService implements UserDetailsService {
 
     @Transactional
     public String unbanUser(Long id) {
+        log.info("Into appUserService method unbanUser");
         AppUser user = repository.getById(id);
         user.setBanned(false);
         repository.save(user);
@@ -64,6 +70,7 @@ public class AppUserService implements UserDetailsService {
 
     @Transactional
     public String changeBaseCurrency(ChangeBaseRequest change) {
+        log.info("Into appUserService method changeBaseCurrency");
         AppUser user = repository.getById(change.getId());
         user.setBaseCurrency(change.getBaseTo());
         user.setAmount(change.getNewAmount());
@@ -73,6 +80,7 @@ public class AppUserService implements UserDetailsService {
 
     @Transactional
     public void changeAmountCurrency(AddValueRequest request) {
+        log.info("Into appUserService method changeAmountCurrency");
         AppUser user = repository.getById(request.getId());
         BigDecimal result = user.getAmount().add(request.getValue());
         user.setAmount(result);

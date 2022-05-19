@@ -28,6 +28,7 @@ public class EmailService implements EmailSender {
             helper.setSubject("Confirm your email on CurrencyApp");
             helper.setFrom("currency@app.com");
             mailSender.send(mimeMessage);
+            log.info("mimeMessage has been successfully sent");
         } catch (MessagingException ex){
             log.error("sending message fault", ex);
             throw new IllegalStateException("sending message fault");

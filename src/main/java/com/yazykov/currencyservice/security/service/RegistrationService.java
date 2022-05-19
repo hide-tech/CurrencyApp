@@ -6,6 +6,7 @@ import com.yazykov.currencyservice.security.dto.RegistrationResponse;
 import com.yazykov.currencyservice.security.email.EmailSender;
 import com.yazykov.currencyservice.security.repository.AppUserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RegistrationService {
 
     private final AppUserRepository appUserRepository;
@@ -24,18 +26,22 @@ public class RegistrationService {
     private String linkToConfirm;
 
     public String register(RegistrationResponse response) {
+        log.info("Into registrationService method register");
         boolean isUsernameExist = appUserRepository.findByUsername(response.getUsername()).isPresent();
 
         if (isUsernameExist){
+            log.error(String.format("User with username %s already exist", response.getUsername()));
             throw new IllegalArgumentException(String.
                     format("User with username %s already exist", response.getUsername()));
         }
 
         AppUser user = createNewUser(response);
-        appUserRepository.save(user);
+        user = appUserRepository.save(user);
+        log.info(String.format("User with %d id has been saved", user.getId()));
 
         emailSender.send(user.getEmail(),
                 buildEmail(user.getUsername(), linkToConfirm+user.getUsername()));
+        log.info("Confirmation message to email has been sent");
 
         return "Verify your email and get 100 USD on your balance";
     }
