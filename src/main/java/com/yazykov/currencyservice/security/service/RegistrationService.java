@@ -44,7 +44,7 @@ public class RegistrationService {
         return new AppUser(response.getUsername(),
                 encoder.encode(response.getPassword()),
                 response.getEmail(),
-                AppUserRole.USER,
+                AppUserRole.ROLE_USER,
                 false,
                 true,
                 "USD",

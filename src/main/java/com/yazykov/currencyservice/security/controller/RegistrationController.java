@@ -4,6 +4,8 @@ import com.yazykov.currencyservice.security.dto.RegistrationResponse;
 import com.yazykov.currencyservice.security.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +23,7 @@ public class RegistrationController {
 
     @GetMapping
     @RequestMapping("/confirm")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public String confirmEmail(@PathVariable("username") String username){
         return registrationService.confirm(username);
     }

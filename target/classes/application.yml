@@ -15,9 +15,29 @@ spring:
       hibernate:
         ddl-auto: update
       show-sql: true
+  mail:
+    host: localhost
+    port: 1025
+    username: sender
+    password: sender
+    properties:
+      mail:
+        smtp:
+          ssl:
+            trust: "*"
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
 
 bank:
   api:
     uri: https://api.apilayer.com/exchangerates_data/latest?symbols=GBP%2CJPY%2CEUR&base=USD
     header: 'apikey'
     value: 'nA1gAcB38WdIUNMKYYG8UfBmR9RIErVp'
+
+security:
+  confirmation:
+    link: http://localhost:8085/registration/confirm?username=
