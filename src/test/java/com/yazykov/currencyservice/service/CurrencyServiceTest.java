@@ -1,9 +1,7 @@
 package com.yazykov.currencyservice.service;
 
 import com.yazykov.currencyservice.mappers.BankCurrencyResponseMapper;
-import com.yazykov.currencyservice.mappers.BankCurrencyResponseMapperImpl;
 import com.yazykov.currencyservice.mappers.CurrencyResponseMapper;
-import com.yazykov.currencyservice.mappers.CurrencyResponseMapperImpl;
 import com.yazykov.currencyservice.repository.CurrencyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,8 +18,8 @@ class CurrencyServiceTest {
     @Mock
     private CurrencyRepository repository;
     private BankExchangeClient client;
-    private CurrencyResponseMapper mapper = Mappers.getMapper(CurrencyResponseMapperImpl.class);
-    private BankCurrencyResponseMapper bankMapper = Mappers.getMapper(BankCurrencyResponseMapperImpl.class);
+    private CurrencyResponseMapper mapper = Mappers.getMapper(CurrencyResponseMapper.class);
+    private BankCurrencyResponseMapper bankMapper = Mappers.getMapper(BankCurrencyResponseMapper.class);
 
     private CurrencyService service;
 

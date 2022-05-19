@@ -31,8 +31,8 @@ public class CurrencyService {
 
     @Scheduled(fixedRate = 30000000)
     private void setCheckTimeAndSaveData(){
-
         log.info("into scheduled method setCheckTimeAndSaveData");
+
         BankCurrencyResponse response = null;
 
         try {
