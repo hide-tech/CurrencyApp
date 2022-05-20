@@ -1,5 +1,9 @@
 package com.yazykov.currencyservice.security.service;
 
+import com.yazykov.currencyservice.security.appuser.AppUser;
+import com.yazykov.currencyservice.security.appuser.AppUserRole;
+import com.yazykov.currencyservice.security.dto.AddValueRequest;
+import com.yazykov.currencyservice.security.dto.ChangeBaseRequest;
 import com.yazykov.currencyservice.security.mappers.AppUserAdminResponseMapper;
 import com.yazykov.currencyservice.security.mappers.AppUserResponseMapper;
 import com.yazykov.currencyservice.security.repository.AppUserRepository;
@@ -8,9 +12,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.math.BigDecimal;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,10 +39,16 @@ class AppUserServiceTest {
 
     @Test
     void loadUserByUsername() {
-//        //when
-//        service.loadUserByUsername("");
-//        //then
-//        verify(repository).findByUsername("");
+        //init
+        Optional<AppUser> userOpt = Optional.of(new AppUser(18L, "user", "user", "user@user.com", AppUserRole.ROLE_USER,
+                false, true, "USD", new BigDecimal("100")));
+        Mockito.doReturn(userOpt)
+                .when(repository)
+                .findByUsername("user");
+        //when
+        service.loadUserByUsername("user");
+        //then
+        verify(repository, Mockito.times(1)).findByUsername("user");
     }
 
     @Test
@@ -41,46 +56,78 @@ class AppUserServiceTest {
         //when
         service.loadAllUsers();
         //then
-        verify(repository).findAll();
+        verify(repository, Mockito.times(1)).findAll();
     }
 
     @Test
     void loadUserById() {
         //when
-        service.loadUserById(14L);
+        service.loadUserById(13L);
         //then
-        verify(repository).getById(14L);
+        verify(repository).getById(13L);
     }
 
     @Test
     void banUser() {
+        //init
+        Mockito.doReturn(new AppUser())
+                .when(repository)
+                .getById(14L);
         //when
-        service.loadUserById(14L);
+        service.banUser(14L);
         //then
-        verify(repository).getById(14L);
+        verify(repository, Mockito.times(1)).getById(14L);
+        Mockito.verify(repository, Mockito.times(1)).save(repository.getById(14L));
+
+        assertTrue(repository.getById(14L).getBanned());
     }
 
     @Test
     void unbanUser() {
+        //init
+        Mockito.doReturn(new AppUser())
+                .when(repository)
+                .getById(15L);
         //when
-        service.loadUserById(14L);
+        service.unbanUser(15L);
         //then
-        verify(repository).getById(14L);
+        verify(repository, Mockito.times(1)).getById(15L);
+        Mockito.verify(repository, Mockito.times(1)).save(repository.getById(15L));
+
+        assertEquals(false, repository.getById(15L).getBanned());
     }
 
     @Test
     void changeBaseCurrency() {
+        //init
+        Mockito.doReturn(new AppUser())
+                .when(repository)
+                .getById(12L);
         //when
-        service.loadUserById(14L);
+        service.changeBaseCurrency(new ChangeBaseRequest(12L, "USD",
+                "EUR", new BigDecimal("300")));
         //then
-        verify(repository).getById(14L);
+        verify(repository, Mockito.times(1)).getById(12L);
+        Mockito.verify(repository, Mockito.times(1)).save(repository.getById(12L));
+
+        assertEquals("EUR", repository.getById(12L).getBaseCurrency());
+        assertEquals(new BigDecimal("300"), repository.getById(12L).getAmount());
     }
 
     @Test
     void changeAmountCurrency() {
+        //init
+        Mockito.doReturn(new AppUser(18L, "user", "user", "user@user.com", AppUserRole.ROLE_USER,
+                        false, true, "USD", new BigDecimal("100")))
+                .when(repository)
+                .getById(20L);
         //when
-        service.loadUserById(14L);
+        service.changeAmountCurrency(new AddValueRequest(20L, "USD", new BigDecimal("150")));
         //then
-        verify(repository).getById(14L);
+        verify(repository, Mockito.times(1)).getById(20L);
+        Mockito.verify(repository, Mockito.times(1)).save(repository.getById(20L));
+
+        assertEquals("USD", repository.getById(20L).getBaseCurrency());
+        assertEquals(new BigDecimal("250"), repository.getById(20L).getAmount());
     }
 }
