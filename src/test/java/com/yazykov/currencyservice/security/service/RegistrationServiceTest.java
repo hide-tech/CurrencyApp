@@ -8,7 +8,6 @@ import com.yazykov.currencyservice.security.repository.AppUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,6 +18,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,19 +41,21 @@ class RegistrationServiceTest {
 
     @Test
     void register_thenOk() {
-        //todo solve this test
         //given
         RegistrationResponse response = new RegistrationResponse("user"
                 , "123", "user@user.com");
+        when(repository.save(any(AppUser.class))).thenReturn(new AppUser(1L,"user",
+                "123", "user@user.com", AppUserRole.ROLE_USER, false,
+                true,"USD", BigDecimal.ZERO));
         //when
-//        service.register(response);
+        service.register(response);
         //then
+        Mockito.verify(repository, Mockito.times(1)).save(any(AppUser.class));
 
-
-//        Mockito.verify(sender, Mockito.times(1)).send(
-//                response.getEmail(),
-//                ArgumentMatchers.anyString()
-//        );
+        Mockito.verify(sender, Mockito.times(1)).send(
+                anyString(),
+                anyString()
+        );
     }
 
     @Test

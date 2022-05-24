@@ -6,9 +6,14 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -25,17 +30,14 @@ class BankExchangeClientTest {
 
     @Mock
     private RestTemplate restTemplate;
-
+    @InjectMocks
     private BankExchangeClient client;
-
-    private String bankUri = "uri";
-    private String headerValue = "apiv";
-    private String header = "api";
-
-    @BeforeEach
-    void setUp(){
-        client = new BankExchangeClient(restTemplate);
-    }
+    @Value("${bank.api.uri}")
+    private String bankUri;
+    @Value("${bank.api.value}")
+    private String headerValue;
+    @Value("${bank.api.header}")
+    private String header;
 
     @SneakyThrows
     @Test
@@ -44,33 +46,20 @@ class BankExchangeClientTest {
         RequestEntity<Void> request = RequestEntity.get(bankUri)
                 .header(header, headerValue)
                 .build();
-        Mockito.doReturn(ResponseEntity.of(Optional.of(new BankCurrencyResponse("USD",
-                        LocalDate.of(2020, 10,5), Map.of("EUR",
-                        new BigDecimal("1.1"),"JPY", new BigDecimal("120.15")),
-                        true, 17645L))))
-                .when(restTemplate)
-                .exchange(request, BankCurrencyResponse.class);
+        BankCurrencyResponse bankResponse = new BankCurrencyResponse("USD",
+                LocalDate.of(2020, 10, 5), Map.of("EUR",
+                new BigDecimal("1.1")),
+                true, 17645L);
+        Mockito.when(restTemplate.exchange(request, BankCurrencyResponse.class))
+                .thenReturn(new ResponseEntity<BankCurrencyResponse>(bankResponse, HttpStatus.OK));
         //when
         BankCurrencyResponse expected = client.getCurrencyFromBank();
         //then
-        assertEquals("USD", expected.getBase());
-        assertEquals(LocalDate.of(2020, 10, 5), expected.getDate());
-        assertTrue(expected.getSuccess());
-        assertEquals(Map.of("EUR",
-                new BigDecimal("1.1"),"JPY", new BigDecimal("120.15")), expected.getRates());
-        assertEquals(17645L, expected.getTimestamp());
-    }
-
-    @Test
-    void getCurrencyFromBank_thenFault() {
-        //init
-        RequestEntity<Void> request = RequestEntity.get(bankUri)
-                .header(header, headerValue)
-                .build();
-        Mockito.doReturn(ResponseEntity.of(Optional.empty()))
-                .when(restTemplate)
-                .exchange(request, BankCurrencyResponse.class);
-        //then
-        assertThrows(ConnectionToBankException.class, () -> client.getCurrencyFromBank());
+        assertEquals(expected, bankResponse);
+        Mockito.verify(restTemplate, Mockito.times(1))
+                .exchange(Mockito.eq(bankUri),
+                        Mockito.eq(HttpMethod.GET),
+                        Mockito.eq(request),
+                        Mockito.eq(BankCurrencyResponse.class));
     }
 }

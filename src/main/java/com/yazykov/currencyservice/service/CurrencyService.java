@@ -30,15 +30,14 @@ public class CurrencyService {
     }
 
     @Scheduled(fixedRate = 30000000)
-    private void setCheckTimeAndSaveData(){
+    private void setCheckTimeAndSaveData() throws ConnectionToBankException {
         log.info("into scheduled method setCheckTimeAndSaveData");
 
-        BankCurrencyResponse response = null;
+        BankCurrencyResponse response = client.getCurrencyFromBank();
 
-        try {
-            response = client.getCurrencyFromBank();
-        } catch (ConnectionToBankException e) {
-            log.error(e.getMessage());
+        if (response == null){
+            log.error("Some problem with connection to bank");
+            throw new ConnectionToBankException("Some problem with connection to bank");
         }
 
         Currency currency = bankCurrencyResponseMapper.bankCurrencyResponseToCurrency(response);
