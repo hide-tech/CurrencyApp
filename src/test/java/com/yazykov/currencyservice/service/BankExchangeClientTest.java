@@ -1,31 +1,23 @@
 package com.yazykov.currencyservice.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yazykov.currencyservice.dto.BankCurrencyResponse;
-import com.yazykov.currencyservice.throwable.ConnectionToBankException;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Map;
-import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-@ExtendWith(MockitoExtension.class)
+@RestClientTest(BankExchangeClient.class)
 class BankExchangeClientTest {
 
     @Mock
@@ -38,6 +30,7 @@ class BankExchangeClientTest {
     private String headerValue;
     @Value("${bank.api.header}")
     private String header;
+    private ObjectMapper mapper = new ObjectMapper();
 
     @SneakyThrows
     @Test
@@ -46,12 +39,20 @@ class BankExchangeClientTest {
         RequestEntity<Void> request = RequestEntity.get(bankUri)
                 .header(header, headerValue)
                 .build();
-        BankCurrencyResponse bankResponse = new BankCurrencyResponse("USD",
-                LocalDate.of(2020, 10, 5), Map.of("EUR",
-                new BigDecimal("1.1")),
-                true, 17645L);
+        String json = "{\n" +
+                "  \"base\": \"USD\",\n" +
+                "  \"date\": \"2021-03-17\",\n" +
+                "  \"rates\": {\n" +
+                "    \"EUR\": 0.813399,\n" +
+                "    \"GBP\": 0.72007,\n" +
+                "    \"JPY\": 107.346001\n" +
+                "  },\n" +
+                "  \"success\": true,\n" +
+                "  \"timestamp\": 1519296206\n" +
+                "}";
+        BankCurrencyResponse bankResponse = mapper.convertValue(json, BankCurrencyResponse.class);
         Mockito.when(restTemplate.exchange(request, BankCurrencyResponse.class))
-                .thenReturn(new ResponseEntity<BankCurrencyResponse>(bankResponse, HttpStatus.OK));
+                .thenReturn(new ResponseEntity(bankResponse, HttpStatus.OK));
         //when
         BankCurrencyResponse expected = client.getCurrencyFromBank();
         //then
