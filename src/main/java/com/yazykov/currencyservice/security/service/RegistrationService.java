@@ -1,17 +1,23 @@
 package com.yazykov.currencyservice.security.service;
 
+import com.yazykov.currencyservice.dto.CurrencyResponse;
 import com.yazykov.currencyservice.security.appuser.AppUser;
 import com.yazykov.currencyservice.security.appuser.AppUserRole;
 import com.yazykov.currencyservice.security.dto.RegistrationResponse;
 import com.yazykov.currencyservice.security.email.EmailSender;
 import com.yazykov.currencyservice.security.repository.AppUserRepository;
+import com.yazykov.currencyservice.service.CurrencyService;
+import com.yazykov.currencyservice.throwable.ExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -21,18 +27,17 @@ public class RegistrationService {
     private final AppUserRepository appUserRepository;
     private final BCryptPasswordEncoder encoder;
     private final EmailSender emailSender;
+    private final CurrencyService currencyService;
 
     @Value("${security.confirmation.link}")
     private String linkToConfirm;
 
     public String register(RegistrationResponse response) {
-        log.info("Into registrationService method register");
         boolean isUsernameExist = appUserRepository.findByUsername(response.getUsername()).isPresent();
 
         if (isUsernameExist){
-            log.error(String.format("User with username %s already exist", response.getUsername()));
-            throw new IllegalArgumentException(String.
-                    format("User with username %s already exist", response.getUsername()));
+            throw new ExceptionHandler(String.
+                    format("User with username %s already exist", response.getUsername()), HttpStatus.CONFLICT);
         }
 
         AppUser user = createNewUser(response);
@@ -41,7 +46,6 @@ public class RegistrationService {
 
         emailSender.send(user.getEmail(),
                 buildEmail(user.getUsername(), linkToConfirm+user.getUsername()));
-        log.info("Confirmation message to email has been sent");
 
         return "Verify your email and get 100 USD on your balance";
     }
@@ -128,9 +132,21 @@ public class RegistrationService {
 
     public String confirm(String username) {
         AppUser user = appUserRepository.findByUsername(username).orElseThrow(
-                () -> {throw new IllegalStateException("Wrong with confirmation");}
+                () -> {throw new ExceptionHandler("Wrong with confirmation", HttpStatus.BAD_REQUEST);}
         );
-        user.setAmount(new BigDecimal("100"));
+        if (user.getConfirmedAt() != null){
+            throw new ExceptionHandler("Your account already confirmed", HttpStatus.METHOD_NOT_ALLOWED);
+        }
+
+        CurrencyResponse currency = currencyService.getLatestCurrency();
+        BigDecimal currentAmount = user.getAmount().divide(currency.getRates().get(user.getBaseCurrency()),
+                RoundingMode.HALF_UP).multiply(currency.getRates().get("USD"));
+        BigDecimal resultAmountUSD = currentAmount.add(new BigDecimal("100"));
+        BigDecimal resultAmount = resultAmountUSD.divide(currency.getRates().get("USD"), RoundingMode.HALF_UP)
+                .multiply(currency.getRates().get(user.getBaseCurrency()));
+
+        user.setAmount(resultAmount);
+        user.setConfirmedAt(LocalDateTime.now());
         appUserRepository.save(user);
         return "Successfully confirmed. You got extra 100 USD on your balance";
     }

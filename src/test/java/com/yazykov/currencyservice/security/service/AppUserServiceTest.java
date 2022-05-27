@@ -47,7 +47,7 @@ class AppUserServiceTest {
     void loadUserByUsername() {
         //init
         Optional<AppUser> userOpt = Optional.of(new AppUser(18L, "user", "user", "user@user.com", AppUserRole.ROLE_USER,
-                false, true, "USD", new BigDecimal("100")));
+                false, true, "USD", new BigDecimal("100"), null));
         Mockito.doReturn(userOpt)
                 .when(repository)
                 .findByUsername("user");
@@ -107,7 +107,7 @@ class AppUserServiceTest {
     void changeBaseCurrency() {
         //given
         Mockito.doReturn(new AppUser(12L, "user", "user", "user@user.com", AppUserRole.ROLE_USER,
-                        false, true, "EUR", new BigDecimal("100")))
+                        false, true, "EUR", new BigDecimal("100"), null))
                 .when(repository)
                 .getById(12L);
         Mockito.doReturn(new CurrencyResponse(LocalDateTime.now(), Map.of("USD", new BigDecimal("1.0"),
@@ -131,7 +131,7 @@ class AppUserServiceTest {
     void changeAmountCurrency() {
         //given
         Mockito.doReturn(new AppUser(18L, "user", "user", "user@user.com", AppUserRole.ROLE_USER,
-                        false, true, "EUR", new BigDecimal("100")))
+                        false, true, "EUR", new BigDecimal("100"), null))
                 .when(repository)
                 .getById(20L);
         Mockito.doReturn(new CurrencyResponse(LocalDateTime.now(), Map.of("USD", new BigDecimal("1.0"),

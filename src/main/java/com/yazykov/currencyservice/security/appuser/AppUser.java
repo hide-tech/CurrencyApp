@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -29,6 +30,7 @@ public class AppUser implements UserDetails {
     private Boolean enabled;
     private String baseCurrency;
     private BigDecimal amount;
+    private LocalDateTime confirmedAt;
 
     public AppUser(String username,
                    String password,

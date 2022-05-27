@@ -4,20 +4,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yazykov.currencyservice.dto.BankCurrencyResponse;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.List;
 
-@RestClientTest(BankExchangeClient.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
+
 class BankExchangeClientTest {
 
     @Mock
@@ -51,8 +51,8 @@ class BankExchangeClientTest {
                 "  \"timestamp\": 1519296206\n" +
                 "}";
         BankCurrencyResponse bankResponse = mapper.convertValue(json, BankCurrencyResponse.class);
-        Mockito.when(restTemplate.exchange(request, BankCurrencyResponse.class))
-                .thenReturn(new ResponseEntity(bankResponse, HttpStatus.OK));
+        when(restTemplate.exchange(ArgumentMatchers.any(RequestEntity.class), BankCurrencyResponse.class))
+                .thenReturn(new ResponseEntity<>(bankResponse, HttpStatus.OK));
         //when
         BankCurrencyResponse expected = client.getCurrencyFromBank();
         //then

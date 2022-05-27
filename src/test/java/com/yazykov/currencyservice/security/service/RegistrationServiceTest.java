@@ -5,6 +5,7 @@ import com.yazykov.currencyservice.security.appuser.AppUserRole;
 import com.yazykov.currencyservice.security.dto.RegistrationResponse;
 import com.yazykov.currencyservice.security.email.EmailSender;
 import com.yazykov.currencyservice.security.repository.AppUserRepository;
+import com.yazykov.currencyservice.service.CurrencyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,12 +32,14 @@ class RegistrationServiceTest {
     private BCryptPasswordEncoder encoder;
     @Mock
     private EmailSender sender;
+    @Mock
+    private CurrencyService currencyService;
 
     private RegistrationService service;
 
     @BeforeEach
     void setUp() {
-        service = new RegistrationService(repository, encoder, sender);
+        service = new RegistrationService(repository, encoder, sender, currencyService);
     }
 
     @Test
@@ -46,7 +49,7 @@ class RegistrationServiceTest {
                 , "123", "user@user.com");
         when(repository.save(any(AppUser.class))).thenReturn(new AppUser(1L,"user",
                 "123", "user@user.com", AppUserRole.ROLE_USER, false,
-                true,"USD", BigDecimal.ZERO));
+                true,"USD", BigDecimal.ZERO, null));
         //when
         service.register(response);
         //then
@@ -76,7 +79,7 @@ class RegistrationServiceTest {
         //init
         AppUser user = new AppUser(1L,"user",
                 "123", "user@user.com", AppUserRole.ROLE_USER, false,
-                true,"USD", BigDecimal.ZERO);
+                true,"USD", BigDecimal.ZERO, null);
         Mockito.doReturn(Optional.of(user))
                 .when(repository)
                 .findByUsername("user");

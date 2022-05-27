@@ -19,15 +19,13 @@ public class RegistrationController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String createNewUser(@RequestBody RegistrationResponse response){
-        log.info("Into registrationController method createNewUser");
         return registrationService.register(response);
     }
 
     @GetMapping
-    @RequestMapping("/confirm")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping("/confirm/{username}")
+    @PreAuthorize("#username == authentication.name")
     public String confirmEmail(@PathVariable("username") String username){
-        log.info("Into registrationController method confirmEmail");
         return registrationService.confirm(username);
     }
 }

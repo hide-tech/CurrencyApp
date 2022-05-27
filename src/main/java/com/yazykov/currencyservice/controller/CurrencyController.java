@@ -20,7 +20,6 @@ public class CurrencyController {
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public CurrencyResponse getCurrency(){
-        log.info("into controller method getCurrency");
         return currencyService.getLatestCurrency();
     }
 
